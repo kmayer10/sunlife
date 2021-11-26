@@ -1,0 +1,36 @@
+- name: Attach worker nodes to the cluster
+  hosts: all
+
+  tasks:
+  - name: Generate JOIN TOKEN
+    shell: kubeadm token create --print-join-command > join-token.sh
+    when: inventory_hostname in groups['master']
+  - name: Getting join-token from k8s master to ansible controller
+    fetch:
+      src: join-token.sh
+      dest: join-token.sh
+      mode: 755
+      flat: yes
+    when: inventory_hostname in groups['master']
+  - name: Getting join-token from ansible controller to k8s worker nodes
+    copy:
+      src: join-token.sh
+      dest: /tmp/join-token.sh
+      mode: 755
+    when: inventory_hostname in groups['node']
+    ignore_errors: yes
+  - name: run JOIN COMMAND
+    shell: sh /tmp/join-token.sh
+    register: join_command
+    become: yes
+    when: inventory_hostname in groups['node']
+  - name: print JOIN Command output
+    debug: var=join_command.stdout_lines
+    when: inventory_hostname in groups['node']
+  - name: LIST NODES
+    shell: kubectl get nodes
+    register: nodes
+    when: inventory_hostname in groups['master']
+  - name: print NODE LIST
+    debug: var=nodes.stdout_lines
+    when: inventory_hostname in groups['master']
