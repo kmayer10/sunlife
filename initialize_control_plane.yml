@@ -1,0 +1,38 @@
+- name: Initialising Control plane
+  hosts: master
+  become: yes
+
+  tasks:
+  - name: Initialize Control Plane
+    shell: kubeadm init --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
+    register: init_output
+    ignore_errors: yes # this will help to run next task even if the current tasks is failed
+  - name: print init_output
+    debug: var=init_output.stdout_lines
+  - name: Create .kube folder
+    file:
+      path: /home/ubuntu/.kube
+      state: directory
+      owner: "{{ ansible_user_id }}"
+      group: "{{ ansible_user_gid }}"
+  - name: Copy Config file
+    copy: 
+      src: /etc/kubernetes/admin.conf
+      dest: /home/ubuntu/.kube/config
+      owner: ubuntu
+      group: ubuntu
+      remote_src: yes
+  - name: Listing Nodes in k8s cluster
+    shell: kubectl get nodes -o wide
+    register: nodes
+    become: no
+  - name: print node list
+    debug: var=nodes.stdout_lines
+    become: no
+  - name: Setting up CNI (Container Network Interface)
+    shell: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml && sleep 15 && kubectl get nodes && kubectl get pods -A
+    register: cni
+    become: no
+  - name: print CNI output
+    debug: var=cni.stdout_lines
+    become: no
