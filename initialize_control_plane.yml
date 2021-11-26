@@ -20,7 +20,7 @@
   - name: Copy Config file
     copy: 
       src: /etc/kubernetes/admin.conf
-      dest: /home/ubuntu/.kube/config
+      dest: /home/ubuntu1/.kube/config
       owner: ubuntu1
       group: ubuntu1
       remote_src: yes
