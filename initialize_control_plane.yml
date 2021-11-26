@@ -3,6 +3,8 @@
   become: yes
 
   tasks:
+  - name: Disable Swap
+    shell: swapoff -a
   - name: Initialize Control Plane
     shell: kubeadm init --apiserver-advertise-address=192.168.211.132
     register: init_output
