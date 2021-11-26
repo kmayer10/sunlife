@@ -1,0 +1,40 @@
+- name: Install & Setup Docker
+  hosts: all
+  become: yes
+
+  tasks: 
+  - name: Install Docker
+    apt:  # package manager
+      name: docker.io
+      state: present
+      update_cache: yes
+  - name: Changing docker socket owner to ubuntu
+    file:
+      path: /var/run/docker.sock
+      owner: "{{ anisble_user }}"
+  - name: Logging the Docker Version
+    shell: docker version
+    become: no
+    register: docker_version # this is module is used to log output of shell, scrit or command module
+  - name: printing the Docker Version
+    debug: var=docker_version.stdout_lines
+  - name: Create /etc/docker
+    file:
+      state: directory
+      path: /etc/docker
+  - name: Copy daemon.json
+    copy: 
+      src: daemon.json
+      dest: /etc/docker/daemon.json
+    notify: restart_docker
+  - name: create /etc/systemd/system/docker.service.d
+    file:
+      state: directory 
+      path: /etc/systemd/system/docker.service.d
+
+  handlers: # these tasks got executed on the when some other task got changed
+  - name: restart_docker
+    service:
+      name: docker
+      state: restarted
+      enabled: yes
