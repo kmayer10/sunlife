@@ -11,7 +11,7 @@
   - name: Changing docker socket owner to ubuntu
     file:
       path: /var/run/docker.sock
-      owner: "{{ anisble_user }}"
+      owner: "{{ ansible_user }}"
   - name: Logging the Docker Version
     shell: docker version
     become: no
