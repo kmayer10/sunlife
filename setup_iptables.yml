@@ -1,0 +1,18 @@
+- name: Letting iptables see bridged traffic
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Copy /etc/modules-load.d/k8s.conf
+    copy:
+      src: k8s.conf
+      dest: /etc/modules-load.d/k8s.conf
+  - name: Copy /etc/sysctl.d/k8s.conf
+    copy: 
+      src: iptables-k8s.conf
+      dest: /etc/sysctl.d/k8s.conf
+  - name: reload system
+    shell: sysctl --system
+    register: output
+  - name: print reload output
+    debug: var=output.stdout_lines    
