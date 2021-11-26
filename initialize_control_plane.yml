@@ -4,7 +4,7 @@
 
   tasks:
   - name: Initialize Control Plane
-    shell: kubeadm init --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
+    shell: kubeadm init --apiserver-advertise-address=192.168.211.132
     register: init_output
     ignore_errors: yes # this will help to run next task even if the current tasks is failed
   - name: print init_output
@@ -19,8 +19,8 @@
     copy: 
       src: /etc/kubernetes/admin.conf
       dest: /home/ubuntu/.kube/config
-      owner: ubuntu
-      group: ubuntu
+      owner: ubuntu1
+      group: ubuntu1
       remote_src: yes
   - name: Listing Nodes in k8s cluster
     shell: kubectl get nodes -o wide
