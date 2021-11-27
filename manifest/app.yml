@@ -60,11 +60,16 @@ metadata:
   name: app
   namespace: 2tier
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - name: app
     port: 80
     targetPort: app
+    nodePort: 30000
     protocol: TCP
   selector:
     app: nodejs
+
+# git pull origin
+# git apply -f app.yml
+#  try to access application using browser with url http://localhost:30000
