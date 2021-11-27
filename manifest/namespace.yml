@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 2tier
+
+# Apply the manifest using "kubectl apply -f namespace.yml"
+# Get the list of Namespaces using "kubectl get namespaces"
