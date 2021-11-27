@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app
+  namespace: 2tier
+  labels:
+    app: app
+spec:
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers: 
+      - name: app
+        image: kulbhushanmayer/nodejs-app:v1
+        ports:
+        - containerPort: 4000
+          name: app
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: 2tier
+spec:
+  type: ClusterIP
+  ports:
+  - name: app
+    port: 80
+    targetPort: app
+    protocol: TCP
+  selector:
+    app: nodejs
