@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db
+  namespace: 2tier
+data:
+  DB_USER: postgres
+  DB_URL: database.2tier.svc.cluster.local
+
+# git pull origin
+# kubectl apply -f pg_configmap.yml
+# kubectl get cm -n 2tier
+# kubectl describe cm db -n 2tier
