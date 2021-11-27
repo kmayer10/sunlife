@@ -14,6 +14,13 @@ spec:
       containers: 
       - name: postgres
         image: postgres:13.4
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-pwd
+              key: DB_PWD
+          
   replicas: 1
   selector: # to create relation between ReplicaSet & POD
     matchLabels: # it will match the label avaiable in the POD Template under Line 11
@@ -22,3 +29,12 @@ spec:
 
 # Apply; kubectl apply -f pg_deployment.yml
 # Check resources got created: kubectl get all -n 2tier
+# Check labels on resources: kubectl get all -n 2tier --show-labels
+# Get details about resource: kubectl describe resource-type resource-name -n namespace-name
+# Get the logs for a POD: kubectl logs pod-name -n 2tier
+
+### update 1
+# Create Secret: kubectl create secret generic db-pwd --from-literal=DB_PWD=india123 -n 2tier
+# apply the file: kubectl apply -f pg_deployment.yml
+# Check resources got created: kubectl get all -n 2tier
+# POD Status should be Running
