@@ -22,6 +22,22 @@ spec:
             name: db
         - secretRef:
             name: db-pwd
+      initContainers: ## These are short term pods got executed before starting the main application containers
+      - name: db-setup
+        image: kulbhushanmayer/nodejs-app:database-setup
+        command:
+        - "sh"
+        - "-c"
+        - "sh database_setup.sh && sleep 30"
+        envFrom:
+        - configMapRef:
+            name: db
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-pwd
+              key: DB_PWD
   replicas: 2
   selector:
     matchLabels:
@@ -31,6 +47,11 @@ spec:
 # kubectl apply -f app.yml
 # kubectl exec -it -n 2tier pod-name -- printenv
 # kubectl logs -n 2tier pod-name
+## UPDATE 2 - Added initContainers to check the availability of DB & Table needed for application and to create them if doesn't exists
+# git pull origin 
+# kubectl apply -f app.yml
+# kubectl logs -n 2tier pod-name
+# kubectl logs -n 2tier pod-name -c db-setup
 
 ---
 apiVersion: v1
