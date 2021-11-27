@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: 2tier
+  labels:
+    app: db
+spec: 
+  template:
+    metadata:
+      labels:
+        app: pg
+    spec: 
+      containers: 
+      - name: postgres
+        image: postgres:13.4
+  replicas: 1
+  selector: # to create relation between ReplicaSet & POD
+    matchLabels: # it will match the label avaiable in the POD Template under Line 11
+      app: pg
+
+
+# Apply; kubectl apply -f pg_deployment.yml
+# Check resources got created: kubectl get all -n 2tier
