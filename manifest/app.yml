@@ -17,10 +17,20 @@ spec:
         ports:
         - containerPort: 4000
           name: app
+        envFrom:
+        - configMapRef:
+            name: db
+        - secretRef:
+            name: db-pwd
   replicas: 2
   selector:
     matchLabels:
       app: nodejs
+
+## UPDATE 1 - Created ENV Variables using ConfigMap & Secret
+# kubectl apply -f app.yml
+# kubectl exec -it -n 2tier pod-name -- printenv
+# kubectl logs -n 2tier pod-name
 
 ---
 apiVersion: v1
