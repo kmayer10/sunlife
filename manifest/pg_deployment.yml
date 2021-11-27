@@ -20,6 +20,9 @@ spec:
             secretKeyRef:
               name: db-pwd
               key: DB_PWD
+        ports:
+        - containerPort: 5432
+          name: pg
           
   replicas: 1
   selector: # to create relation between ReplicaSet & POD
@@ -38,3 +41,7 @@ spec:
 # apply the file: kubectl apply -f pg_deployment.yml
 # Check resources got created: kubectl get all -n 2tier
 # POD Status should be Running
+
+### Update 2: Defined the port on which container will communicate
+# Apply the changes using apply command
+# describe the newly created pod check if port is available or not, "Port:           5432/TCP"
