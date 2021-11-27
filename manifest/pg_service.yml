@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: database
+  namespace: 2tier
+spec:
+  type: ClusterIP
+  ports:
+  - name: pg-db
+    port: 5432
+    targetPort: pg
+    protocol: TCP
+  selector:
+    app: pg
+
+
+## Check POD and its ip: kubectl get pods -o wide -n 2tier
+## Apply  newly created manifest: kubectl apply -f pg_service.yml
+## Get Service: kubectl get service -n 2tier
+## Get Enpoints for Service: kubectl get endpoints -n 2tier
+## IP reflecting in Endpoint & the POD IP should be same
